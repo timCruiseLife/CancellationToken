@@ -1,9 +1,0 @@
-bin
-obj
-.vs
-.ps_store
-.project
-.vscode
-wwwroot/uplads
-keys
-*.csproj.user
