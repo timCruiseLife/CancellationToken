@@ -1,13 +1,18 @@
 # WebApi CancellationToken Example Project
 
 此專案為個人練習 CancellationToken 與 EntityFrameworkCore 的使用<br>
-This project is to practice CancellationToken and EntityFrameworkCore
+This project is to practice CancellationToken and EntityFrameworkCore<br>
 
 以留言板的CRUD為舉例<br>
-Take the CRUD of the message board as an example
+Take the CRUD of the message board as an example<br>
 
 資料庫為MySQL<br>
-DB is MySQL
+DB is MySQL<br>
+
+DefaultConnection need to be edited<br>
+appstting.json<br>
+appsettings.Development.json<br>
+
 
 執行以下command 更新 DB <br>
 Execute command to update the DB<br>
