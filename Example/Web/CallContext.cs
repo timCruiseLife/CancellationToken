@@ -27,7 +27,7 @@
         public CallContext(CancellationToken cancellationToken, string traceActivityId)
         {
             CancellationToken = cancellationToken;
-            TraceActivityId = String.IsNullOrEmpty(traceActivityId) ? Guid.NewGuid().ToString() : traceActivityId;
+            TraceActivityId = string.IsNullOrEmpty(traceActivityId) ? Guid.NewGuid().ToString() : traceActivityId;
         }
     }
 }

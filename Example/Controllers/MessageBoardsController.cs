@@ -48,7 +48,7 @@ namespace Example.Controllers
             var existings = await this.context.MessageBoards.Where(x => x.Id == id).FirstOrDefaultAsync(callContext.CancellationToken);
             if (existings == null)
             {
-                return this.NotFound(this.CreateErrorResult<MessageBoard>("ObjectNotFound", "message boards not found"));
+                return this.NotFound(this.CreateErrorResult<MessageBoard>(ExampleConstants.WebApiErrors.ObjectNotFound, "message boards not found"));
             }
 
             return this.Ok(new WebApiResult<MessageBoard>(existings));
@@ -60,11 +60,17 @@ namespace Example.Controllers
             (var isValid, string reason) = request.IsValid();
             if (!isValid)
             {
-                return this.BadRequest(this.CreateErrorResult<MessageBoard>("InvalidData", reason));
+                return this.BadRequest(this.CreateErrorResult<MessageBoard>(ExampleConstants.WebApiErrors.InvalidData, reason));
             }
 
             var callContext = this.GetCallContext();
             using var monitor = new OperationMonitor(this.logger, AppEvent.IncomingRequest, nameof(Post), callContext.TraceActivityId);
+            var conflict = await this.context.MessageBoards.Where(x => x.Name == request.Name).FirstOrDefaultAsync(callContext.CancellationToken);
+            if (conflict != null)
+            {
+                return this.Conflict(this.CreateErrorResult<MessageBoard>(ExampleConstants.WebApiErrors.ObjectConflict, "message boards name already exists"));
+            }
+
             request.CreateTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
             await this.context.MessageBoards.AddAsync(request, callContext.CancellationToken);
             await this.context.SaveChangesAsync(callContext.CancellationToken);
@@ -81,10 +87,11 @@ namespace Example.Controllers
             var existing = await this.context.MessageBoards.Where(x => x.Id == id).FirstOrDefaultAsync(callContext.CancellationToken);
             if (existing == null)
             {
-                return this.NotFound();
+                return this.NotFound(this.CreateErrorResult<MessageBoard>(ExampleConstants.WebApiErrors.ObjectNotFound, "message boards not found"));
             }
 
-            if (existing.Content != request.Content)
+            if (!string.IsNullOrEmpty(request.Content) &&
+                existing.Content != request.Content)
             {
                 existing.Content = request.Content;
             }
@@ -102,7 +109,7 @@ namespace Example.Controllers
             var existing = await this.context.MessageBoards.Where(x => x.Id == id).FirstOrDefaultAsync(callContext.CancellationToken);
             if (existing == null)
             {
-                return this.NotFound();
+                return this.NotFound(this.CreateErrorResult<MessageBoard>(ExampleConstants.WebApiErrors.ObjectNotFound, "message boards not found"));
             }
 
             this.context.MessageBoards.Remove(existing);

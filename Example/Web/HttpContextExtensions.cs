@@ -1,25 +1,34 @@
-﻿using Microsoft.AspNetCore.Http;
-
-namespace Example.Web
+﻿namespace Example.Web
 {
     public static class HttpContextExtensions
     {
         public static string RemoteAddr(this HttpContext context)
         {
-            object? value;
-            return context.Items.TryGetValue("RemoteAddr", out value) ? ((string)value) : (context.Connection?.RemoteIpAddress?.ToString() ?? string.Empty);
+            if (context.Items.TryGetValue("RemoteAddr", out object? value))
+            {
+                return value as string ?? string.Empty;
+            }
+
+            return (context.Connection?.RemoteIpAddress?.ToString() ?? string.Empty);
         }
 
         public static string RequestScheme(this HttpContext context)
         {
-            object? value;
-            return context.Items.TryGetValue("RequestScheme", out value) ? ((string)value) : string.Empty;
+            if (context.Items.TryGetValue("RequestScheme", out object? value))
+            {
+                return value as string ?? string.Empty;
+            }
+            return string.Empty;
         }
 
         public static CallContext GetCallContext(this HttpContext context)
         {
-            object? value;
-            return context.Items.TryGetValue(typeof(CallContext), out value) ? ((CallContext)value) : CallContext.Default;
+            if (context.Items.TryGetValue(typeof(CallContext), out object? value))
+            {
+                return value as CallContext ?? CallContext.Default;
+            }
+
+            return CallContext.Default;
         }
     }
 }
